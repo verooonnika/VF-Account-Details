@@ -1,0 +1,87 @@
+<apex:page controller="AccountContactController"  tabStyle="Account_Details__tab">
+    <apex:form >
+        <apex:pageBlock id="PageBlockSection">  
+            
+            <apex:pageBlockSection >
+                <apex:actionRegion >
+                    <apex:selectList label="Select Account" size="1" value="{!selectedAccountId}">
+                        <apex:actionSupport event="onchange" action="{!changeAccount}" reRender="PageBlockSection">
+                        </apex:actionSupport>
+                        <apex:selectOptions value="{!AccountList}"></apex:selectOptions>
+                    </apex:selectList>
+                </apex:actionRegion> 
+            </apex:pageBlockSection> 
+            
+            <apex:commandButton title="New Account" immediate="true" value="New Account" action="{!showHideNewAccount}"/>
+            
+            <apex:pageBlockSection rendered="{!isNewAccountOpen}">
+                <apex:inputField value="{!newAccount.Name}"/>
+                <apex:inputField value="{!newAccount.Description}"/>
+                <apex:inputField value="{!newAccount.Industry}"/>
+                <apex:inputField value="{!newAccount.NumberOfEmployees}"/>
+                <apex:inputField value="{!newAccount.NumberofLocations__c}"/>
+                <apex:inputField value="{!newAccount.Phone}"/>
+                <apex:inputField value="{!newAccount.Rating}"/>
+                <apex:inputField value="{!newAccount.AnnualRevenue}"/>
+                <apex:inputField value="{!newAccount.Website}"/>
+                <apex:inputField value="{!newAccount.Fax}"/>
+                <apex:commandButton value="Save" action="{!createAccount}"/>
+                <apex:commandButton value="Cancel" immediate="true" action="{!showHideNewAccount}"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Account Details" >
+                <apex:outputField value="{!account.Name}"/>
+                <apex:outputField value="{!account.Description}"/>
+                <apex:outputField value="{!account.Industry}"/>
+                <apex:outputField value="{!account.NumberOfEmployees}"/>
+                <apex:outputField value="{!account.NumberofLocations__c}"/>
+                <apex:outputField value="{!account.Phone}"/>
+                <apex:outputField value="{!account.Rating}"/>
+                <apex:outputField value="{!account.AnnualRevenue}"/>
+                <apex:outputField value="{!account.Website }"/>
+                <apex:outputField value="{!account.Fax}"/>
+            </apex:pageBlockSection>
+            
+            <apex:commandButton immediate="true" title="New Contact" value="New Contact" action="{!showHideNewContact}"/>
+            
+            <apex:pageBlockSection rendered="{!isNewContactOpen}">
+                <apex:inputField value="{!contact.FirstName}"/>
+                <apex:inputField value="{!contact.LastName}"/>
+                <apex:inputField value="{!contact.Department}"/>
+                <apex:inputField value="{!contact.Email}"/>
+                <apex:inputField value="{!contact.Phone}"/>
+                <apex:inputField value="{!contact.Description}"/>
+                <apex:inputField value="{!contact.Title}"/>
+                <apex:commandButton title="Save" value="Save" action="{!createContact}"/>
+                <apex:commandButton title="Cansel" immediate="true" value="Cancel" action="{!showHideNewContact}"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Contacts"  columns="1">
+                <apex:pageBlockTable value="{!contacts}" var="contact">
+                    <apex:column value="{!contact.Name}"/>
+                    <apex:column value="{!contact.Department}"/>
+                    <apex:column value="{!contact.Email}"/>
+                    <apex:column value="{!contact.Phone}"/>
+                    <apex:column value="{!contact.Description}"/>
+                    <apex:column value="{!contact.Title}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            
+            <apex:selectList value="{!size}" multiselect="false" size="1">
+                <apex:actionSupport event="onchange" action="{!refreshPageSize}" reRender="PageBlockSection">
+                </apex:actionSupport>
+                <apex:selectOptions value="{!paginationSizeOptions}"/>
+            </apex:selectList>
+            
+            <div align="Center">
+                <apex:commandButton status="fetchStatus" reRender="PageBlockSection" value="First" action="{!setCon.first}" disabled="{!!setCon.hasPrevious}" title="First Page"/> 
+                <apex:commandButton status="fetchStatus" reRender="PageBlockSection" value="Previous" action="{!setCon.previous}" disabled="{!!setCon.hasPrevious}" title="Previous Page"/>
+                <apex:outputText >{!(setCon.pageNumber * size)+1-size}-{!IF((setCon.pageNumber * size)>noOfRecords, noOfRecords,
+                    (setCon.pageNumber * size))} of {!noOfRecords}
+                </apex:outputText>
+                <apex:commandButton status="fetchStatus" reRender="PageBlockSection" value="Next" action="{!setCon.next}" disabled="{!!setCon.hasNext}" title="Next Page"/> 
+                <apex:commandButton status="fetchStatus" reRender="PageBlockSection" value="Last" action="{!setCon.last}" disabled="{!!setCon.hasNext}" title="Last Page"/>             
+            </div>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
