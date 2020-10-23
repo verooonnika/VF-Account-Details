@@ -1,6 +1,7 @@
 public class AccountContactController {
     
     public Account account{get;set;}
+    
     public Account newAccount{get;set;}
     public Contact contact{get;set;}
     public Id selectedAccountId{get;set;} 
@@ -10,25 +11,7 @@ public class AccountContactController {
     public Boolean isNewContactOpen{get;set;}
     public Boolean isNewAccountOpen{get;set;}
     
-    public ApexPages.StandardSetController setCon{
-        get{
-            setCon = new ApexPages.StandardSetController(Database.getQueryLocator(
-                [SELECT Id, 
-                 Name,
-                 AccountId,
-                 Department,
-                 Email,
-                 Phone,
-                 Description,
-                 Title
-                 FROM Contact WHERE AccountId =: selectedAccountId]));
-            setCon.setPageSize(size);
-            noOfRecords = setCon.getResultSize();
-            return setCon;
-            
-        }
-        set;
-    }
+    public ApexPages.StandardSetController setCon{get;set;}
     
     public AccountContactController(){
         size=5;
@@ -42,6 +25,7 @@ public class AccountContactController {
         newAccount = new Account();
         selectedAccountId = getAccounts()[0].Id;
         account = getAccount();
+        refreshContacts();
     }
     
     public List<SelectOption> AccountList{
@@ -81,8 +65,24 @@ public class AccountContactController {
         return (List<Contact>) setCon.getRecords();
     } 
     
+    public void refreshContacts(){
+        setCon = new ApexPages.StandardSetController(Database.getQueryLocator(
+            [SELECT Id, 
+             Name,
+             AccountId,
+             Department,
+             Email,
+             Phone,
+             Description,
+             Title
+             FROM Contact WHERE AccountId =: selectedAccountId]));
+        setCon.setPageSize(size);
+        noOfRecords = setCon.getResultSize();
+    }
+    
     public void changeAccount(){
         account = getAccount();
+        refreshContacts();
         noOfRecords = setCon.getResultSize();
     }
     
